@@ -1,8 +1,8 @@
 # UNADESK
 
-UNADESK is a local SPA for working with articles and text annotations. The application allows you to create, edit, view, and delete articles, highlight arbitrary text fragments, assign them a color, and save comments directly in the article text.
+UNADESK — это локальное SPA-приложение для работы со статьями и текстовыми аннотациями. Приложение позволяет создавать, редактировать, просматривать и удалять статьи, выделять произвольные фрагменты текста, присваивать им цвет и сохранять комментарии непосредственно в тексте статьи.
 
-The project is implemented on Angular 21 with standalone bootstrap, stores data in `localStorage`, and does not use third-party UI libraries for dialogs, tooltips, or annotation mechanics.
+Проект реализован на Angular 21 с использованием автономного Bootstrap, хранит данные в `localStorage` и не использует сторонние библиотеки пользовательского интерфейса для диалогов, всплывающих подсказок или механизмов аннотаций.
 
 ## Возможности
 

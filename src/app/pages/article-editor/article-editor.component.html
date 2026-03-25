@@ -1,0 +1,138 @@
+<section class="editor-hero">
+  <div>
+    <h2>{{ screenTitle() }}</h2>
+    <p class="editor-hero__lead">{{ screenLead() }}</p>
+  </div>
+</section>
+
+@if (isMissingArticle()) {
+  <section class="card editor-empty-state">
+    <p class="editor-empty-state__eyebrow">Статья не найдена</p>
+    <h3>Редактировать нечего</h3>
+
+    <p class="editor-empty-state__text">
+      Эта статья больше недоступна. Вернись к списку и выбери другую запись.
+    </p>
+
+    <div class="form-panel__toolbar">
+      <a class="button button--primary" routerLink="/articles">Вернуться к списку</a>
+    </div>
+  </section>
+} @else {
+  <section class="editor-grid">
+    @if (isPreviewMode()) {
+      <article class="card preview-panel">
+        <h3 class="preview-panel__title">{{ articlePreview().title }}</h3>
+
+        @if (articlePreview().titleUrl; as previewImageUrl) {
+          <figure class="preview-panel__media">
+          <img
+            appHideBrokenImage
+            class="preview-panel__image"
+            [src]="previewImageUrl"
+            [alt]="articlePreview().title"
+            loading="lazy"
+          />
+          </figure>
+        }
+
+        <div class="preview-panel__content">
+          @if (articlePreview().renderedParagraphs.length > 0) {
+            @for (paragraph of articlePreview().renderedParagraphs; track paragraph.key) {
+              <p>
+                @for (segment of paragraph.segments; track segment.key) {
+                  <span>{{ segment.text }}</span>
+                }
+              </p>
+            }
+          } @else {
+            <p class="preview-panel__empty">
+              Здесь появится текст статьи, как только ты добавишь содержимое в редактор.
+            </p>
+          }
+        </div>
+
+        <div class="form-panel__toolbar">
+          <button class="button button--primary" type="button" (click)="togglePreviewMode()">
+            Вернуться к редактированию
+          </button>
+          <button class="button button--ghost" type="button" [disabled]="isSubmitting()" (click)="submit()">
+            {{
+              isSubmitting()
+                ? 'Сохранение...'
+                : isEditMode()
+                  ? 'Сохранить изменения'
+                  : 'Сохранить статью'
+            }}
+          </button>
+          <button class="button button--ghost" type="button" (click)="goBack()">Отмена</button>
+        </div>
+      </article>
+    } @else {
+      <form class="card form-panel" [formGroup]="articleForm" (ngSubmit)="submit()">
+        <div class="field">
+          <label class="field__label" for="article-title">
+            Название статьи <span class="field__required-mark" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="article-title"
+            class="field__control"
+            type="text"
+            formControlName="title"
+            placeholder="Например: Заметки по исследованию интерфейса"
+          />
+          @if (hasControlError('title')) {
+            <p class="field__error">Заголовок обязателен.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="article-title-url">Изображение статьи</label>
+          <input
+            id="article-title-url"
+            class="field__control"
+            type="url"
+            formControlName="titleUrl"
+            placeholder="https://example.com/cover.jpg"
+          />
+          @if (hasControlError('titleUrl')) {
+            <p class="field__error">
+              Укажи прямую ссылку на изображение с `http://` или `https://`.
+            </p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="article-content">
+            Текст статьи <span class="field__required-mark" aria-hidden="true">*</span>
+          </label>
+          <textarea
+            id="article-content"
+            class="field__control field__control--textarea"
+            formControlName="content"
+            placeholder="Вставь или напиши текст статьи, который позже можно будет аннотировать."
+          ></textarea>
+          @if (hasControlError('content')) {
+            <p class="field__error">Текст статьи обязателен.</p>
+          }
+        </div>
+
+        <div class="form-panel__toolbar">
+          <button class="button button--primary" type="submit" [disabled]="isSubmitting()">
+            {{
+              isSubmitting()
+                ? 'Сохранение...'
+                : isEditMode()
+                  ? 'Сохранить изменения'
+                  : 'Сохранить статью'
+            }}
+          </button>
+          <button class="button button--ghost" type="button" (click)="togglePreviewMode()">
+            {{ previewToggleLabel() }}
+          </button>
+          <button class="button button--ghost" type="button" (click)="goBack()">Отмена</button>
+        </div>
+      </form>
+    }
+  </section>
+}

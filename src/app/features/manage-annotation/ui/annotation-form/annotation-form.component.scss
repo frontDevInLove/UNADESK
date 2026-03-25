@@ -1,0 +1,125 @@
+:host {
+  display: block;
+}
+
+blockquote,
+p {
+  margin: 0;
+}
+
+.annotation-form {
+  display: grid;
+  gap: 18px;
+}
+
+.annotation-form__preview {
+  background: rgba(244, 239, 230, 0.88);
+  border: 1px solid rgba(29, 44, 52, 0.08);
+  border-radius: 22px;
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.annotation-form__eyebrow {
+  color: var(--color-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+blockquote {
+  color: var(--color-ink);
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.field {
+  display: grid;
+  gap: 10px;
+}
+
+.field__label {
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.field__control {
+  appearance: none;
+  background: #fffdf8;
+  border: 1px solid rgba(29, 44, 52, 0.14);
+  border-radius: 18px;
+  color: var(--color-ink);
+  font: inherit;
+  line-height: 1.6;
+  min-height: 120px;
+  padding: 14px 16px;
+  resize: vertical;
+}
+
+.field__control:focus-visible {
+  border-color: rgba(175, 95, 45, 0.5);
+  box-shadow: 0 0 0 4px rgba(175, 95, 45, 0.12);
+  outline: none;
+}
+
+.field__error {
+  color: #8d2e1f;
+  font-size: 0.9rem;
+}
+
+.color-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.color-option {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(29, 44, 52, 0.12);
+  border-radius: 16px;
+  color: var(--color-ink);
+  cursor: pointer;
+  display: inline-flex;
+  gap: 10px;
+  justify-content: flex-start;
+  min-height: 52px;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.color-option--active {
+  border-color: rgba(29, 44, 52, 0.22);
+  box-shadow: 0 10px 30px rgba(29, 44, 52, 0.08);
+}
+
+.color-option__swatch {
+  background: var(--swatch-color);
+  border: 1px solid rgba(29, 44, 52, 0.14);
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 18px;
+  width: 18px;
+}
+
+.annotation-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .color-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .annotation-form__actions .button {
+    width: 100%;
+  }
+}

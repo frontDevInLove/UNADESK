@@ -1,0 +1,138 @@
+<section class="hero">
+  <div class="hero__copy">
+    <h2>Начни с новой статьи или вернись к уже сохранённым материалам.</h2>
+    <p class="hero__text">
+      Здесь собраны все сохранённые статьи. Открой нужную запись, отредактируй её или начни новую,
+      если хочешь добавить ещё один материал.
+    </p>
+  </div>
+
+  @if (hasArticles()) {
+    <div class="hero__meta">
+      <a class="hero__action button button--primary" routerLink="/articles/new">Создать статью</a>
+    </div>
+  }
+</section>
+
+@if (hasArticles()) {
+  <section class="article-list">
+    @for (article of sortedArticles(); track article.id) {
+      <article
+        class="article-card"
+        tabindex="0"
+        (click)="openArticle(article.id)"
+        (keydown)="openArticleFromKeyboard($event, article.id)"
+      >
+        <div class="article-card__menu" (click)="$event.stopPropagation()">
+          <button
+            #actionMenuTrigger
+            class="article-card__menu-trigger action-menu__trigger"
+            type="button"
+            [attr.aria-expanded]="isActionMenuOpen(article.id)"
+            aria-haspopup="menu"
+            aria-label="Показать действия со статьёй"
+            (click)="toggleActionMenu(article.id, $event)"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          @if (isActionMenuOpen(article.id)) {
+            <div class="article-card__menu-list action-menu__list" role="menu">
+              <a
+                class="article-card__menu-item action-menu__item"
+                [routerLink]="['/articles', article.id, 'edit']"
+                role="menuitem"
+                (click)="closeActionMenu()"
+              >
+                Редактировать
+              </a>
+              <button
+                class="article-card__menu-item article-card__menu-item--danger action-menu__item action-menu__item--danger"
+                type="button"
+                role="menuitem"
+                (click)="requestDeleteArticle(article.id, article.title)"
+              >
+                Удалить
+              </button>
+            </div>
+          }
+        </div>
+
+        <div>
+          <p class="article-card__eyebrow">
+            Добавлено {{ article.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+          </p>
+          <h3>{{ article.title }}</h3>
+        </div>
+        @if (getTitlePreviewUrl(article.titleUrl); as previewImageUrl) {
+          <div class="article-card__content article-card__content--with-image">
+            <img
+              appHideBrokenImage
+              class="article-card__image"
+              [src]="previewImageUrl"
+              [alt]="article.title"
+              loading="lazy"
+            />
+
+            <p class="article-card__preview">
+              {{ getArticlePreview(article.content, true) }}
+            </p>
+          </div>
+        } @else {
+          <p class="article-card__preview">{{ getArticlePreview(article.content) }}</p>
+        }
+      </article>
+    }
+  </section>
+} @else {
+  <section class="empty-state card">
+    <div>
+      <h3>В этом разделе пока нет статей</h3>
+      <p class="empty-state__text">
+        Самое время добавить первую запись. Как только сохранишь статью, она сразу появится здесь, и
+        к ней можно будет вернуться в любой момент.
+      </p>
+    </div>
+
+    <div class="empty-state__actions">
+      <a class="button button--primary" routerLink="/articles/new">Создать первую статью</a>
+    </div>
+  </section>
+}
+
+@if (pendingDeleteDialog(); as pendingDeleteDialog) {
+  <div class="dialog-backdrop" (click)="cancelDeleteArticle()">
+    <section
+      #deleteDialog
+      class="dialog-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-dialog-title"
+      (click)="$event.stopPropagation()"
+    >
+      <p class="dialog-card__eyebrow">Подтверждение</p>
+      <h3 id="delete-dialog-title">Удалить статью?</h3>
+      <p class="dialog-card__text">
+        Статья «{{ pendingDeleteDialog.articleTitle }}» будет удалена без возможности
+        восстановления.
+      </p>
+
+      @if (pendingDeleteDialog.annotationCount > 0) {
+        <p class="dialog-card__text dialog-card__text--danger">
+          Вместе с ней будут удалены {{ pendingDeleteDialog.annotationCount }} аннотаций.
+        </p>
+      }
+
+      <div class="dialog-card__actions">
+        <button class="button button--danger" type="button" (click)="confirmDeleteArticle()">
+          Удалить
+        </button>
+        <button class="button button--ghost" type="button" (click)="cancelDeleteArticle()">
+          Отмена
+        </button>
+      </div>
+    </section>
+  </div>
+}

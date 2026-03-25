@@ -1,0 +1,22 @@
+<section class="toast-region" aria-label="Уведомления" aria-live="polite" aria-relevant="additions text">
+  @for (toast of toasts(); track toast.id) {
+    <article
+      class="toast"
+      [class.toast--error]="toast.tone === 'error'"
+      [class.toast--success]="toast.tone === 'success'"
+      [class.toast--info]="toast.tone === 'info'"
+      [attr.aria-live]="toast.tone === 'error' ? 'assertive' : 'polite'"
+      [attr.role]="toast.tone === 'error' ? 'alert' : 'status'"
+    >
+      <p class="toast__text">{{ toast.text }}</p>
+      <button
+        class="toast__close"
+        type="button"
+        aria-label="Закрыть уведомление"
+        (click)="dismissToast(toast.id)"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </article>
+  }
+</section>

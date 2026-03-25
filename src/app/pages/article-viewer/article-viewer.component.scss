@@ -1,0 +1,236 @@
+:host {
+  display: grid;
+  gap: 20px;
+}
+
+h2,
+h3,
+h4,
+p,
+ul {
+  margin: 0;
+}
+
+h2,
+h3,
+h4 {
+  color: var(--color-ink);
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+}
+
+h2 {
+  font-size: clamp(2rem, 1.5rem + 1.2vw, 3rem);
+  line-height: 1.05;
+}
+
+h3 {
+  font-size: 1.45rem;
+}
+
+.card {
+  border-radius: 28px;
+}
+
+.viewer-nav {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.viewer-nav__back {
+  min-height: 48px;
+}
+
+.card {
+  border: 1px solid rgba(29, 44, 52, 0.1);
+  box-shadow: 0 18px 60px rgba(54, 43, 31, 0.08);
+}
+
+.panel__eyebrow {
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.viewer-empty-state__lead {
+  color: var(--color-muted);
+  line-height: 1.7;
+  max-width: 62ch;
+}
+
+.panel,
+.reader-panel {
+  background: rgba(255, 255, 255, 0.84);
+  display: grid;
+  gap: 20px;
+  padding: 28px;
+}
+
+.reader-panel {
+  gap: 28px;
+  position: relative;
+}
+
+.reader-panel__menu {
+  position: absolute;
+  right: 28px;
+  top: 28px;
+  z-index: 1;
+}
+
+.reader-panel__menu-list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+}
+
+.reader-panel__title {
+  margin-right: 88px;
+}
+
+.reader-panel__figure {
+  margin: 0;
+}
+
+.reader-panel__image {
+  aspect-ratio: 16 / 9;
+  border-radius: 28px;
+  display: block;
+  max-height: 520px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.article-content {
+  color: var(--color-muted);
+  cursor: text;
+  display: grid;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-size: clamp(1.08rem, 1rem + 0.25vw, 1.22rem);
+  gap: 18px;
+  line-height: 1.85;
+  outline: none;
+  word-break: break-word;
+}
+
+.article-content:focus-visible {
+  border-radius: 16px;
+  box-shadow: 0 0 0 4px rgba(175, 95, 45, 0.12);
+}
+
+.article-content__paragraph {
+  margin: 0;
+}
+
+.article-content__segment {
+  text-wrap: pretty;
+  white-space: pre-wrap;
+}
+
+.article-content__annotation {
+  background: linear-gradient(180deg, transparent 0 42%, var(--annotation-color) 42% 100%);
+  border-radius: 0.45em;
+  box-decoration-break: clone;
+  cursor: pointer;
+  padding: 0 0.08em;
+  transition: filter 120ms ease;
+}
+
+.article-content__annotation:hover,
+.article-content__annotation:focus-visible {
+  filter: saturate(1.15);
+  outline: none;
+}
+
+.selection-prompt {
+  background: rgba(24, 36, 41, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(7, 10, 12, 0.24);
+  color: #fffaf4;
+  max-width: min(320px, calc(100vw - 24px));
+  padding: 14px 16px;
+  position: fixed;
+  transform: translateX(-50%);
+  width: min(320px, calc(100vw - 24px));
+  z-index: 24;
+}
+
+.selection-prompt__title {
+  font-size: 0.96rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.selection-prompt__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.annotation-dialog-backdrop {
+  align-items: center;
+  background: rgba(29, 44, 52, 0.34);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: fixed;
+  z-index: 28;
+}
+
+.annotation-dialog {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.94)),
+    var(--surface-glow);
+  border: 1px solid rgba(29, 44, 52, 0.1);
+  border-radius: 28px;
+  box-shadow: 0 24px 64px rgba(29, 44, 52, 0.18);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 22px;
+  width: min(560px, calc(100vw - 32px));
+}
+
+@media (max-width: 820px) {
+  .viewer-nav__back {
+    width: 100%;
+  }
+
+  .reader-panel {
+    gap: 20px;
+    padding: 22px;
+  }
+
+  .reader-panel__title {
+    margin-right: 0;
+  }
+
+  .selection-prompt__actions .button {
+    width: 100%;
+  }
+
+  .annotation-dialog-backdrop {
+    padding: 12px;
+  }
+
+  .annotation-dialog {
+    max-height: calc(100vh - 24px);
+    padding: 18px;
+    width: calc(100vw - 24px);
+  }
+}
+
+@media (max-width: 1180px) and (min-width: 821px) {
+  .reader-panel__title {
+    margin-right: 88px;
+  }
+
+  .reader-panel,
+  .panel {
+    padding: 22px;
+  }
+}

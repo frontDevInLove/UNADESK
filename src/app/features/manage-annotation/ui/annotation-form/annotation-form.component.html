@@ -1,0 +1,52 @@
+<form class="annotation-form" [formGroup]="annotationForm" (ngSubmit)="save()">
+  <div class="annotation-form__preview">
+    <p class="annotation-form__eyebrow">{{ getEyebrow() }}</p>
+    <blockquote>{{ selectedText }}</blockquote>
+  </div>
+
+  <div class="field">
+    <span class="field__label">Цвет выделения</span>
+    <div class="color-grid">
+      @for (option of colorOptions; track option.value) {
+        <button
+          class="color-option"
+          type="button"
+          [class.color-option--active]="isSelectedColor(option.value)"
+          [style.--swatch-color]="option.value"
+          (click)="selectColor(option.value)"
+        >
+          <span class="color-option__swatch"></span>
+          <span>{{ option.label }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="annotation-comment">Комментарий</label>
+    <textarea
+      id="annotation-comment"
+      class="field__control"
+      formControlName="comment"
+      placeholder="Почему этот фрагмент важен?"
+      rows="4"
+    ></textarea>
+    @if (hasCommentError()) {
+      <p class="field__error">Комментарий обязателен.</p>
+    }
+  </div>
+
+  <div class="annotation-form__actions">
+    <button class="button button--primary" type="submit" [disabled]="isSaving || isDeleting">
+      {{ getSubmitLabel() }}
+    </button>
+    @if (mode === 'edit') {
+      <button class="button button--danger" type="button" [disabled]="isSaving || isDeleting" (click)="delete()">
+        {{ isDeleting ? 'Удаление...' : 'Удалить аннотацию' }}
+      </button>
+    }
+    <button class="button button--ghost" type="button" [disabled]="isSaving || isDeleting" (click)="cancel()">
+      Отмена
+    </button>
+  </div>
+</form>

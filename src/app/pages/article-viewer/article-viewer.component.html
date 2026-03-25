@@ -1,0 +1,166 @@
+<nav class="viewer-nav" aria-label="Навигация по статье">
+  <a class="button button--ghost viewer-nav__back" routerLink="/articles">К списку статей</a>
+</nav>
+
+@if (isMissingArticle()) {
+  <section class="card panel">
+    <p class="panel__eyebrow">Статья не найдена</p>
+    <h3>Эта статья больше недоступна</h3>
+    <p class="viewer-empty-state__lead">
+      Возможно, статья уже была удалена. Вернись к списку и выбери другую запись.
+    </p>
+  </section>
+} @else {
+  <article class="card reader-panel">
+    <div class="reader-panel__menu" (click)="$event.stopPropagation()">
+      <button
+        #actionMenuTrigger
+        class="reader-panel__menu-trigger action-menu__trigger"
+        type="button"
+        [attr.aria-expanded]="isActionMenuOpen()"
+        aria-haspopup="menu"
+        aria-label="Показать действия со статьёй"
+        (click)="toggleActionMenu($event)"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      @if (isActionMenuOpen()) {
+        <div #actionMenu class="reader-panel__menu-list action-menu__list" role="menu">
+          <a
+            class="reader-panel__menu-item action-menu__item"
+            [routerLink]="['/articles', articleId(), 'edit']"
+            role="menuitem"
+            (click)="closeActionMenu()"
+          >
+            Редактировать
+          </a>
+          <button
+            class="reader-panel__menu-item reader-panel__menu-item--danger action-menu__item action-menu__item--danger"
+            type="button"
+            role="menuitem"
+            (click)="deleteArticle()"
+          >
+            Удалить
+          </button>
+        </div>
+      }
+    </div>
+
+    <h2 class="reader-panel__title">{{ screenTitle() }}</h2>
+
+    @if (titlePreviewImageUrl()) {
+      <figure class="reader-panel__figure">
+        <img
+          appHideBrokenImage
+          class="reader-panel__image"
+          [src]="titlePreviewImageUrl()!"
+          [alt]="articleTitle()"
+          loading="lazy"
+        />
+      </figure>
+    }
+
+    <div
+      #articleContent
+      class="article-content"
+      tabindex="0"
+      (keyup)="queueSelectionCapture(articleContent)"
+    >
+      @for (paragraph of renderedArticle(); track paragraph.key) {
+        <p class="article-content__paragraph" [attr.data-paragraph-start]="paragraph.startOffset">
+          @for (segment of paragraph.segments; track segment.key) {
+            @if (segment.annotation; as annotation) {
+              <span
+                class="article-content__segment article-content__annotation"
+                [style.--annotation-color]="annotation.color"
+                [attr.data-segment-start]="segment.startOffset"
+                [attr.data-annotation-id]="annotation.id"
+                [attr.data-annotation-comment]="annotation.comment"
+                tabindex="0"
+                role="button"
+                aria-haspopup="dialog"
+                (mouseenter)="annotationInteraction.showTooltip($event, annotation.comment, annotation.color)"
+                (mouseleave)="annotationInteraction.hideTooltip()"
+                (focus)="annotationInteraction.showTooltip($event, annotation.comment, annotation.color)"
+                (blur)="annotationInteraction.hideTooltip()"
+                (click)="openAnnotationEditor($event, annotation)"
+                (keydown)="openAnnotationEditorFromKeyboard($event, annotation)"
+              >{{ segment.text }}</span>
+            } @else {
+              <span class="article-content__segment" [attr.data-segment-start]="segment.startOffset"
+                >{{ segment.text }}</span
+              >
+            }
+          }
+        </p>
+      }
+    </div>
+  </article>
+
+  @if (annotationInteraction.selectionPrompt(); as prompt) {
+    <section
+      #selectionPromptElement
+      class="selection-prompt"
+      [class.selection-prompt--above]="prompt.placement === 'above'"
+      [style.top.px]="prompt.top"
+      [style.left.px]="prompt.left"
+      (click)="$event.stopPropagation()"
+    >
+      <p class="selection-prompt__title">Добавить аннотацию к выделенному фрагменту?</p>
+      <div class="selection-prompt__actions">
+          <button
+            class="button button--primary"
+            type="button"
+            (click)="openCreateAnnotationDialog()"
+          >
+            Да, добавить
+          </button>
+        <button
+          class="button button--ghost"
+          type="button"
+          (click)="dismissSelectionPrompt()"
+        >
+          Не сейчас
+        </button>
+      </div>
+    </section>
+  }
+
+  @if (annotationInteraction.annotationDialog(); as dialog) {
+    <div class="annotation-dialog-backdrop" (click)="cancelAnnotation()">
+      <section
+        #annotationDialog
+        class="annotation-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Аннотация"
+        (click)="$event.stopPropagation()"
+      >
+        <app-annotation-form
+          [mode]="dialog.mode"
+          [selectedText]="dialog.selectedText"
+          [selectionKey]="dialog.selectionKey"
+          [initialComment]="dialog.initialComment"
+          [initialColor]="dialog.initialColor"
+          [isSaving]="annotationInteraction.isSaving()"
+          [isDeleting]="annotationInteraction.isDeleting()"
+          (saveAnnotation)="saveAnnotation($event)"
+          (cancelAnnotation)="cancelAnnotation()"
+          (deleteAnnotation)="deleteAnnotation()"
+        />
+      </section>
+    </div>
+  }
+
+  @if (annotationInteraction.tooltipState(); as tooltip) {
+    <app-annotation-tooltip
+      [comment]="tooltip.comment"
+      [top]="tooltip.top"
+      [left]="tooltip.left"
+      [color]="tooltip.color"
+    />
+  }
+}

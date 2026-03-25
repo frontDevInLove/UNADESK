@@ -1,0 +1,14 @@
+<div class="shell">
+  <header class="shell__header">
+    <div class="shell__brand">
+      <h1><a class="shell__brand-link" routerLink="/articles">{{ title }}</a></h1>
+      <p class="shell__subtitle">{{ subtitle }}</p>
+    </div>
+  </header>
+
+  <main class="shell__content">
+    <router-outlet />
+  </main>
+</div>
+
+<app-toast-outlet />
